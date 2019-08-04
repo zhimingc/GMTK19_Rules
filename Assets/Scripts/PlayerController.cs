@@ -2,6 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+public class PlayerInput
+{
+  public float horizontal;
+  public bool isJumpDown, isJumpUp, isJumping;
+}
+
 public class PlayerController : MonoBehaviour
 {
   [Header("Movement variables")]
@@ -21,21 +27,32 @@ public class PlayerController : MonoBehaviour
   private Animator anim;
 
   // Input variables
-  private float horizontal;
-  private bool isJumpDown, isJumpUp, isJumping;
+  public PlayerInput pi;
+  public bool isActive;
+
+  public bool Active {
+    get {return isActive;} 
+    set
+    {
+      rb.simulated = value;
+      isActive = value;
+    }}
 
   // Start is called before the first frame update
   void Awake()
   {
+    pi = new PlayerInput();
     rb = GetComponent<Rigidbody2D>();
     anim = GetComponentInParent<Animator>();
+    Active = false;
   }
 
   void UpdateInput() {
-    horizontal = Input.GetAxis("Horizontal");
-    isJumpDown = Input.GetKeyDown(KeyCode.Space);
-    isJumpUp = Input.GetKeyUp(KeyCode.Space);
-    isJumping = Input.GetKey(KeyCode.Space);
+    if (!isActive) return;
+    pi.horizontal = Input.GetAxis("Horizontal");
+    pi.isJumpDown = Input.GetKeyDown(KeyCode.Space);
+    pi.isJumpUp = Input.GetKeyUp(KeyCode.Space);
+    pi.isJumping = Input.GetKey(KeyCode.Space);
   }
 
   // Update is called once per frame
@@ -44,7 +61,7 @@ public class PlayerController : MonoBehaviour
     UpdateInput();
 
     // horizontal movement
-    transform.Translate(new Vector3(horizontal, 0, 0) * moveSpeed * Time.deltaTime, Space.World);
+    transform.Translate(new Vector3(pi.horizontal, 0, 0) * moveSpeed * Time.deltaTime, Space.World);
 
     // check if grounded
     isGrounded = rb.IsTouchingLayers(groundLayer);
@@ -52,7 +69,7 @@ public class PlayerController : MonoBehaviour
     if (isGrounded)
     {
       jumpImpusles = 0;
-      if (isJumpDown) 
+      if (pi.isJumpDown) 
       {
         isReleasedJump = false;
         rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
@@ -61,12 +78,12 @@ public class PlayerController : MonoBehaviour
     else
     {
       // check if the player releases the jump button
-      if (isJumpUp) 
+      if (pi.isJumpUp) 
       {
         isReleasedJump = true;
       }
 
-      if (isReleasedJump == false && isJumping) 
+      if (isReleasedJump == false && pi.isJumping) 
       {
         ++jumpImpusles;
         if (jumpImpusles == secondJumpImpusle) 

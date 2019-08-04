@@ -3,11 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using Cinemachine;
+using System.Reflection;
 
 public enum NARRATIVE_STATE { IDLE, NEXT_LEVEL }
 
 public class NarrativeController : MonoBehaviour
 {
+  public PlayerController playerController;
+  public RuleController ruleController;
   public TextDisplay textDisplay;
   public NARRATIVE_STATE state;
   public int narrativeLevel;
@@ -19,7 +22,7 @@ public class NarrativeController : MonoBehaviour
   
   [Header("Timer")]
   public float timer;
-  private float idleTimeTracker;
+  private float timeTracker;
 
   private int eventTracker;
 
@@ -33,14 +36,12 @@ public class NarrativeController : MonoBehaviour
 
   private void Update() {
     // DEBUG CONTROLS
-    if (Input.GetKeyDown(KeyCode.S))
+    if (Input.GetKeyDown(KeyCode.Z))
     {
       SetNarrativeState(NARRATIVE_STATE.NEXT_LEVEL);
     }
     //
     
-    timer += Time.deltaTime;
-
     NarrationUpdate();
     textDisplay.Update();
   }
@@ -48,8 +49,11 @@ public class NarrativeController : MonoBehaviour
   void NarrationUpdate() {
     if (!isDoneWithSeq) 
     {
-      if (timer >= curEvent.time) 
+      if (textDisplay.IsScrollDone) timer += Time.deltaTime;
+
+      if (timer - timeTracker >= curEvent.time) 
       {
+        timeTracker = timer;
         TextDisplayTrigger(curEvent.text);
         GetNextEvent();
       }
@@ -92,10 +96,30 @@ public class NarrativeController : MonoBehaviour
   void ResetSequenceTrackers() 
   {
     textDisplay.Init();
-    idleTimeTracker = 0.0f;
+    timeTracker = 0.0f;
     timer = 0.0f;
     eventTracker = 0;
     isDoneWithSeq = false;
+  }
+
+  public void TriggerRule() 
+  {
+    ruleController.TriggerRule();
+  }
+
+  public void TriggerRuleBreak()
+  {
+    SetNarrativeState(NARRATIVE_STATE.NEXT_LEVEL);
+  }
+
+  public void DeactivatePlayer()
+  {
+    playerController.Active = false;
+  }
+
+  public void ActivatePlayer()
+  {
+    playerController.Active = true;
   }
 
 }
