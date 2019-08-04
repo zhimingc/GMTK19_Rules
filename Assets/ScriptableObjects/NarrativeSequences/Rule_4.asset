@@ -15,7 +15,13 @@ MonoBehaviour:
   events:
   - time: 1
     text: Fine! We'll do something else then.
-  - time: 2.5
-    text: Why don't you try making your own rule?
-  - time: 5
-    text: Go on, use your mouse and drag the words to make your rule.
+  - time: 1.5
+    text: Why don't you try making your own rule?[f(TriggerYourRule)]
+  - time: 2
+    text: I'll even give you options for which words to pick.. :)[f(TriggerWordOptions)]
+  - time: 2
+    text: Go on, use your mouse and drag the words to make your rule.[f(Pause)]
+  - time: 0
+    text: Fantastic! Let me give you the next rule now.[f(ResetPC)][f(TriggerRule)]
+  - time: 2
+    text: Surely you won't break your own rule, right?

@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e38055d5dfec75641a0d89f648bc69ac, type: 3}
   m_Name: RuleFlavour
   m_EditorClassIdentifier: 
-  commaPause: 0
-  elipsePause: 0
+  commaPause: 0.25
+  elipsePause: 0.5

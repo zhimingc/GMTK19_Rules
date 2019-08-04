@@ -15,7 +15,7 @@ MonoBehaviour:
   events:
   - time: 1
     text: Here's your new rule.[f(TriggerRule)][f(ActivatePlayer)]
-  - time: 5
+  - time: 3
     text: Yes, yes, you can still move.
-  - time: 7.5
+  - time: 6
     text: What's so good about moving anyway... :/

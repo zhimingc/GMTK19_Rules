@@ -8,4 +8,10 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Main_Level.unity
     guid: 2cda990e2423bbf4892e6590ba056729
+  - enabled: 1
+    path: Assets/Scenes/Jam_End.unity
+    guid: 0abc319c8591f3e49b6f9535a7a412d8
+  - enabled: 1
+    path: Assets/Scenes/Jam_End_2.unity
+    guid: b1d35870ca1250845804b7ad961760a7
   m_configObjects: {}

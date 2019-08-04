@@ -95,6 +95,7 @@ public class RuleController : MonoBehaviour
         if (pc.IsRuleBroken) return true;
       break;
       case 4:
+        if (pc.IsRuleBroken) return true;
       break;
       case 5:
       break;

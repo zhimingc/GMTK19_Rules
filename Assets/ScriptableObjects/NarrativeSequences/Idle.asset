@@ -13,15 +13,15 @@ MonoBehaviour:
   m_Name: Idle
   m_EditorClassIdentifier: 
   events:
-  - time: 10
+  - time: 5
     text: Isn't it exciting when you follow the rules? :)
-  - time: 10
+  - time: 5
     text: 'You''re doing so well! '
-  - time: 10
+  - time: 5
     text: Yes, yes, this is quality rule following.
-  - time: 10
+  - time: 5
     text: I got to admit. You're exceeding my expectations... just wow!
-  - time: 10
-    text: Who ARE you? You can't be just any random rule follower...
-  - time: 10
+  - time: 5
     text: This is amazing... you're so close to winning!
+  - time: 5
+    text: '[f(TriggerFollowEnd)]'

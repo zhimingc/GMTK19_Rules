@@ -10,12 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 95d7c21883f8a7c41850346a844d09af, type: 3}
-  m_Name: Next_0
+  m_Name: Idle_1_0
   m_EditorClassIdentifier: 
   events:
-  - time: 0
-    text: Hey! Why did you do that?
   - time: 1
-    text: Now I have to make a new rule.
-  - time: 0.1
-    text: Okay, let's try this again..
+    text: Hey, want to hear a joke?
+  - time: 1
+    text: What's long, measured, and tells you what to do? :)
+  - time: 1
+    text: A... RULER! [f(ToggleNarratorWord)][c]HA, HA, HA :D
+  - time: 2.5
+    text: '[f(ToggleNarratorWord)]Gosh, that never gets old.. I mean it.[f(LoopSeq)]'

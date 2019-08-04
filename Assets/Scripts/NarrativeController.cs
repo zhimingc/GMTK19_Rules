@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using TMPro;
 using Cinemachine;
 using System.Reflection;
@@ -10,6 +11,7 @@ public enum NARRATIVE_STATE { NEXT_RULE, IDLE, NEXT_LEVEL, END }
 public class NarrativeController : MonoBehaviour
 {
   public PlayerController playerController;
+  public WordController wordController;
   public RuleController ruleController;
   public TextDisplay textDisplay;
   public NARRATIVE_STATE state;
@@ -17,8 +19,10 @@ public class NarrativeController : MonoBehaviour
   public List<NarrativeSequence> ruleSeqs, idleSeqs, nextSeqs;
   public NarrativeEvent curEvent;
   private NarrativeSequence seqToUse;
+  private int level4Seq;
 
   private bool isDoneWithSeq;
+  private bool pauseSeq;
   
   [Header("Timer")]
   public float timer;
@@ -32,15 +36,16 @@ public class NarrativeController : MonoBehaviour
   }
 
   private void Start() {
+    level4Seq = 1;
     textDisplay.Init();
     SetNarrativeState(NARRATIVE_STATE.NEXT_RULE);
   }
 
   private void Update() {
     // DEBUG CONTROLS
-    if (Input.GetKeyDown(KeyCode.Z))
+    if (Input.GetKeyDown(KeyCode.C))
     {
-      SetNarrativeState(NARRATIVE_STATE.NEXT_LEVEL);
+      textDisplay.FinishTextDisplay();
     }
     //
     
@@ -67,15 +72,17 @@ public class NarrativeController : MonoBehaviour
   }
 
   void NarrationUpdate() {
-    if (!isDoneWithSeq) 
+    if (!isDoneWithSeq && !pauseSeq) 
     {
-      if (textDisplay.IsScrollDone) timer += Time.deltaTime;
-
-      if (timer - timeTracker >= curEvent.time) 
+      if (textDisplay.IsScrollDone) 
       {
-        timeTracker = timer;
-        TextDisplayTrigger(curEvent.text);
-        GetNextEvent();
+        timer += Time.deltaTime;
+        if (timer - timeTracker >= curEvent.time) 
+        {
+          timeTracker = timer;
+          TextDisplayTrigger(curEvent.text);
+          GetNextEvent();
+        }
       }
     }
   }
@@ -93,6 +100,8 @@ public class NarrativeController : MonoBehaviour
       case NARRATIVE_STATE.IDLE:
         ResetSequenceTrackers();
         seqToUse = idleSeqs[0];
+        // for level 4
+        if (narrativeLevel == 4) seqToUse = idleSeqs[level4Seq];
         GetNextEvent();
       break;
       case NARRATIVE_STATE.NEXT_LEVEL:
@@ -103,7 +112,7 @@ public class NarrativeController : MonoBehaviour
     }
   }
 
-  void GetNextEvent() {
+  public void GetNextEvent() {
     if (eventTracker < seqToUse.events.Count) 
     {
       curEvent = seqToUse.events[eventTracker];
@@ -131,6 +140,12 @@ public class NarrativeController : MonoBehaviour
   public void TriggerRule() 
   {
     ruleController.TriggerRule();
+    
+    // player rule level
+    if (narrativeLevel == 4)
+    {
+      wordController.MovePlayerRuleDown();
+    }
   }
 
   public void TriggerRuleBreak()
@@ -156,7 +171,7 @@ public class NarrativeController : MonoBehaviour
 
   public void ResetLevel()
   {
-    playerController.ResetPC();
+    ResetPC();
     if (narrativeLevel == ruleSeqs.Count - 1)
     {
       // end of sequences
@@ -170,4 +185,69 @@ public class NarrativeController : MonoBehaviour
     }
   }
 
+  public void ResetPC()
+  {
+    playerController.ResetPC();
+  }
+
+  public void TriggerYourRule()
+  {
+    wordController.TriggerPlayerRuleDisplay();
+  }
+
+  public void TriggerWordOptions()
+  {
+    wordController.TriggerWordOptions();    
+  }
+
+  public void ToggleNarratorWord()
+  {
+    wordController.ToggleNarratorWord();
+  }
+
+  public void ToggleNarratorFake()
+  {
+    wordController.ToggleNarratorFake(true);
+  }
+
+  public void ToggleNarratorFakeOff()
+  {
+    wordController.ToggleNarratorFake(false);
+  }
+
+  public void Pause()
+  {
+    pauseSeq = true;
+  }
+
+  public void Resume()
+  {
+    pauseSeq = false;
+  }
+
+  public void LoopSeq()
+  {
+    eventTracker = 0;
+    GetNextEvent();
+    isDoneWithSeq = false;
+  }
+
+  public void NextLevel4Idle()
+  {
+    ++level4Seq;
+    textDisplay.FinishTextDisplay();
+    SetNarrativeState(NARRATIVE_STATE.IDLE);
+  }
+
+  public void TriggerEnd()
+  {
+    Pause();
+    LeanTween.delayedCall(2.5f, ()=>{SceneManager.LoadScene("Jam_End");});
+  }
+
+  public void TriggerFollowEnd()
+  {
+    Pause();
+    LeanTween.delayedCall(2.5f, ()=>{SceneManager.LoadScene("Jam_End_2");});    
+  }
 }

@@ -98,6 +98,9 @@ public class TextDisplay {
         MethodInfo fn = nc.GetType().GetMethod(fnName);
         fn.Invoke(nc, new object[0]);
       break;
+      case 'c':
+        displayObj.text += "<#F565E3>";
+      break;
     }
   }
 
@@ -118,6 +121,7 @@ public class TextDisplay {
       case ')':
       case '(':
       case '/':
+      case ']':
         curDelay += flavour.elipsePause;
       break;
     }
@@ -142,9 +146,9 @@ public class TextDisplay {
         int endOfToken = textToDisplay.IndexOf(']', textTracker+1);
         // send token into parser
         string token = textToDisplay.Substring(textTracker + 1, endOfToken - textTracker - 1);
-        ParseToken(token);
-
         textToDisplay = textToDisplay.Remove(textTracker, endOfToken - textTracker + 1);          
+
+        ParseToken(token);
       }
       
       if (textTracker >= textToDisplay.Length) {
@@ -152,14 +156,23 @@ public class TextDisplay {
         return;
       }
 
-      displayObj.text = textToDisplay.Substring(0, textTracker+1);
+      displayObj.text += textToDisplay[textTracker];
       ParseText(textToDisplay[textTracker]);
 
       ++textTracker;
     }
   }
 
+  public void FinishTextDisplay()
+  {
+    textTracker = textToDisplay.Length;
+    displayObj.text = textToDisplay;
+    ToggleScrollDone(true);
+  }
+
   public void TriggerTextDisplay(string newText) {
+    displayObj.text = "";
+    isScrollDone = false;
     textToDisplay = new string(newText.ToCharArray());
     ResetTextTracker();
     ResetScroll();

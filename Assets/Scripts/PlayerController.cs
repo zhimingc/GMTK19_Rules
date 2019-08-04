@@ -139,7 +139,7 @@ public class PlayerController : MonoBehaviour
     isRuleBroken = false;
     transform.position = origin;
     shakeEffect.TriggerShake(0.25f);
-    if (nc.narrativeLevel <= 1) Active = false;
+    if (nc?.narrativeLevel <= 1) Active = false;
   }
 
   private void OnTriggerEnter2D(Collider2D other) {
