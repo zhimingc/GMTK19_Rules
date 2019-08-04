@@ -10,16 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 95d7c21883f8a7c41850346a844d09af, type: 3}
-  m_Name: Idle_0
+  m_Name: Rule_4
   m_EditorClassIdentifier: 
   events:
   - time: 1
-    text: Welcome!
-  - time: 1.5
-    text: Are you excited to follow some rules?
-  - time: 2
-    text: Because I am.. :)
-  - time: 2
-    text: Here's the first rule.[f(TriggerRule)][f(ActivatePlayer}]
+    text: Fine! We'll do something else then.
   - time: 2.5
-    text: Hope you enjoy playing my rule game! :)
+    text: Why don't you try making your own rule?
+  - time: 5
+    text: Go on, use your mouse and drag the words to make your rule.

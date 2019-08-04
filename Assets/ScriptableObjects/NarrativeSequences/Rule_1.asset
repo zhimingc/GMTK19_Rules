@@ -10,12 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 95d7c21883f8a7c41850346a844d09af, type: 3}
-  m_Name: Next_0
+  m_Name: Rule_1
   m_EditorClassIdentifier: 
   events:
-  - time: 0
-    text: Hey! Why did you do that?
   - time: 1
-    text: Now I have to make a new rule.
-  - time: 0.1
-    text: Okay, let's try again..
+    text: Here's your new rule.[f(TriggerRule)][f(ActivatePlayer)]
+  - time: 5
+    text: Yes, yes, you can still move.
+  - time: 7.5
+    text: What's so good about moving anyway... :/

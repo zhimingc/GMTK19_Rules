@@ -13,16 +13,16 @@ public class RuleController : MonoBehaviour
   public List<string> rulesText;
 
   private bool isRuleDisplayed;
-  private bool isRuleBroken;
+  public bool isRuleBroken;
 
   private void Start() {
     textDisplay.Init();    
   }
 
-  public void ResetRuleController()
+  public void Reset()
   {
-    isRuleDisplayed = false;
     isRuleBroken = false;
+    textDisplay.Init();
   }
 
   private void Update() {
@@ -43,24 +43,29 @@ public class RuleController : MonoBehaviour
   private void TriggerRuleBreak()
   {
     if (!isRuleDisplayed) TriggerRule();
-    textDisplay.shakeEffect.TriggerShake(2.5f);
+    float breakDuration = 1.5f;
+    float returnTime = 0.5f;
+    textDisplay.shakeEffect.TriggerShake(breakDuration);
     isRuleBroken = true;
 
     // move cam
-    //ruleCam.gameObject.SetActive(true);
-    float breakDuration = 1.5f;
+    ruleCam.gameObject.SetActive(true);
     TextMeshPro tm = textDisplay.displayObj;
     float originalFontSize = tm.fontSize;
     LeanTween.value(gameObject, tm.fontSize, tm.fontSize + 2.0f, breakDuration).setOnUpdate( (float val)=>{ tm.fontSize = val; } );
     LeanTween.delayedCall(breakDuration, ()=> {
       //Toolbox.Instance.camMod.ShakeCam(-1, -1, ruleCam);
-      Toolbox.Instance.camMod.ShakeCam(3.0f);
+      Toolbox.Instance.camMod.ShakeCam(0.25f, 2.0f, ruleCam);
       tm.fontSize = originalFontSize;
       textDisplay.displayObj.fontStyle = TMPro.FontStyles.Strikethrough;
+      
+      // particles
+      textDisplay.displayObj.GetComponentInChildren<ParticleSystem>().Play();
 
-      LeanTween.delayedCall(0.5f, () => {
+      ruleCam.gameObject.SetActive(false);
+
+      LeanTween.delayedCall(returnTime, () => {
       nc.TriggerRuleBreak();
-      //ruleCam.gameObject.SetActive(false);
       //LeanTween.value(gameObject, tm.fontSize, originalFontSize, 2.0f).setOnUpdate( (float val)=>{ tm.fontSize = val; } );
       });
     });
@@ -70,6 +75,7 @@ public class RuleController : MonoBehaviour
   {
     isRuleDisplayed = true;
     textDisplay.TriggerTextDisplay(rulesText[nc.narrativeLevel]);
+    textDisplay.displayObj.fontStyle = TMPro.FontStyles.Normal;
   }
 
   public bool RuleBreakPolling()
@@ -77,16 +83,16 @@ public class RuleController : MonoBehaviour
     switch (nc.narrativeLevel)
     {
       case 0:
-        if (pc.pi.horizontal > 0.0f)
-        {
-          return true;
-        }
+        if (pc.pi.horizontal > 0.0f) return true;
       break;
       case 1:
+        if (pc.IsRuleBroken) return true;
       break;
       case 2:
+        if (pc.IsRuleBroken) return true;
       break;
       case 3:
+        if (pc.IsRuleBroken) return true;
       break;
       case 4:
       break;

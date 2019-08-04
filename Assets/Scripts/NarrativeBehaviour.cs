@@ -35,7 +35,7 @@ public class CameraModule {
 
     if (curCam == null) noiseChannel = vcam.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>();
     else noiseChannel = curCam.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>();
-    
+
     noiseChannel.m_AmplitudeGain = shakeAmt;
     shakeTimer = shakeTime;
   }
@@ -63,11 +63,16 @@ public class TextDisplay {
   public bool IsScrollDone {get {return isScrollDone;}}
   
   public void Init() {
-    ResetTextTracker();
-    ToggleScrollDone(true);
+    ResetTextDisplay();
     displayObj.text = "";
     camMod.Init();
     shakeEffect.Init(displayObj.transform);
+  }
+
+  public void ResetTextDisplay()
+  {
+    ResetTextTracker();
+    ToggleScrollDone(true);
   }
 
   private void ResetTextTracker() {
@@ -99,6 +104,7 @@ public class TextDisplay {
   private void ParseText(char word) {
     switch (word) {
       case ',':
+      case '?':
         curDelay += flavour.commaPause;
       break;
       case '!':
@@ -111,6 +117,7 @@ public class TextDisplay {
       case ':':
       case ')':
       case '(':
+      case '/':
         curDelay += flavour.elipsePause;
       break;
     }

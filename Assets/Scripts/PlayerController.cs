@@ -6,13 +6,28 @@ public class PlayerInput
 {
   public float horizontal;
   public bool isJumpDown, isJumpUp, isJumping;
+
+  public void Zero()
+  {
+    horizontal = 0.0f;
+    isJumpDown = false;
+    isJumpUp = false;
+    isJumping = false;
+  }
 }
 
 public class PlayerController : MonoBehaviour
 {
+  public NarrativeController nc;
+
+  // Input variables
+  public PlayerInput pi;
+  public bool isActive;
+
   [Header("Movement variables")]
   public float moveSpeed;
-
+  public LayerMask wallLayer;
+  //public float gravity;
 
   [Header("Jumping variables")]
   public bool isGrounded;
@@ -23,13 +38,17 @@ public class PlayerController : MonoBehaviour
   private int jumpImpusles;
   private bool isReleasedJump;
 
+  [Header("Effects")]
+  public ShakeEffect shakeEffect;
+
   private Rigidbody2D rb;
   private Animator anim;
+  private Vector3 origin;
 
-  // Input variables
-  public PlayerInput pi;
-  public bool isActive;
+  [Header("Flags")]
+  public bool isRuleBroken;
 
+  public bool IsRuleBroken { get {return isRuleBroken;}}
   public bool Active {
     get {return isActive;} 
     set
@@ -41,10 +60,16 @@ public class PlayerController : MonoBehaviour
   // Start is called before the first frame update
   void Awake()
   {
+    origin = transform.position;
     pi = new PlayerInput();
     rb = GetComponent<Rigidbody2D>();
     anim = GetComponentInParent<Animator>();
-    Active = false;
+    shakeEffect = new ShakeEffect();
+  }
+
+  private void Start() {
+    shakeEffect.Init(transform);
+    ResetPC();
   }
 
   void UpdateInput() {
@@ -58,10 +83,18 @@ public class PlayerController : MonoBehaviour
   // Update is called once per frame
   void Update()
   {
+    shakeEffect.Update();
     UpdateInput();
 
+    Vector3 velocity = new Vector3(pi.horizontal, 0, 0) * moveSpeed * Time.deltaTime;
+
     // horizontal movement
-    transform.Translate(new Vector3(pi.horizontal, 0, 0) * moveSpeed * Time.deltaTime, Space.World);
+    RaycastHit2D hit = Physics2D.Raycast(transform.position, velocity, velocity.magnitude + transform.localScale.x / 2.0f, wallLayer);
+    if (hit.collider == null)    
+    {
+      transform.Translate(velocity, Space.World);
+    }
+    //rb.AddForce(velocity, ForceMode2D.Impulse);
 
     // check if grounded
     isGrounded = rb.IsTouchingLayers(groundLayer);
@@ -93,6 +126,26 @@ public class PlayerController : MonoBehaviour
           rb.AddForce(Vector2.up * secJumpForce, ForceMode2D.Impulse);
         }
       }      
+    }
+
+    // clamp velocity
+    //rb.velocity = Vector2.ClampMagnitude(rb.velocity, 5.0f);
+  }
+
+  public void ResetPC()
+  {
+    pi.Zero();
+    rb.velocity = Vector2.zero;
+    isRuleBroken = false;
+    transform.position = origin;
+    shakeEffect.TriggerShake(0.25f);
+    if (nc.narrativeLevel <= 1) Active = false;
+  }
+
+  private void OnTriggerEnter2D(Collider2D other) {
+    if (other.tag == "RuleTrigger")
+    {
+      isRuleBroken = true;
     }
   }
 }
