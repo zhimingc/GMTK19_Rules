@@ -106,6 +106,7 @@ public class PlayerController : MonoBehaviour
       {
         isReleasedJump = false;
         rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
+        Toolbox.Instance.SfxMan.PlaySoundWithPitch("Jump", 0.9f, 1.1f, 0.05f);
       }
     }
     else

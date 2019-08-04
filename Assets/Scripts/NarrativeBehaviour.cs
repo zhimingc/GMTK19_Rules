@@ -104,27 +104,42 @@ public class TextDisplay {
     }
   }
 
-  private void ParseText(char word) {
+  private bool ParseText(char word) {
+    bool res = false;
     switch (word) {
       case ',':
       case '?':
+        res = true;
+        Toolbox.Instance.SfxMan.PlaySoundWithPitch("Blips", 0.9f, 1.1f, 0.2f);
         curDelay += flavour.commaPause;
       break;
       case '!':
+        res = true;
+        Toolbox.Instance.SfxMan.PlaySoundWithPitch("Blips", 0.9f, 1.1f, 0.2f);
         curDelay += flavour.commaPause;
         camMod.ShakeCam();
       break;
       case '.':
-        curDelay += flavour.elipsePause;
-      break;
       case ':':
+        res = true;
+        Toolbox.Instance.SfxMan.PlaySoundWithPitch("Blips", 0.9f, 1.1f, 0.2f);
+        curDelay += flavour.elipsePause;
+        break;
       case ')':
+      case ']':
+        res = true;
+        Toolbox.Instance.SfxMan.PlaySoundWithPitch("Smile", 0.95f, 1.05f, 0.25f);
+        curDelay += flavour.elipsePause;
+        break;
       case '(':
       case '/':
-      case ']':
+        res = true;
+        Toolbox.Instance.SfxMan.PlaySoundWithPitch("Sad", 0.95f, 1.05f, 0.25f);
         curDelay += flavour.elipsePause;
       break;
     }
+
+    return res;
   }
 
   public void Update() {
@@ -155,9 +170,12 @@ public class TextDisplay {
         ToggleScrollDone(true);
         return;
       }
-
+      
       displayObj.text += textToDisplay[textTracker];
-      ParseText(textToDisplay[textTracker]);
+      bool parsed = ParseText(textToDisplay[textTracker]);
+
+      // sfx
+      if (!parsed && textTracker % 3 == 0) Toolbox.Instance.SfxMan.PlaySoundWithPitch("Blips", 0.9f, 1.1f, 0.2f);
 
       ++textTracker;
     }

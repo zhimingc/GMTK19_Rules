@@ -29,7 +29,7 @@ public class RuleController : MonoBehaviour
     // DEBUG CONTROLS
     if (Input.GetKeyDown(KeyCode.X))
     {
-      TriggerRuleBreak();
+      //TriggerRuleBreak();
     }
     //
 
@@ -61,6 +61,7 @@ public class RuleController : MonoBehaviour
       
       // particles
       textDisplay.displayObj.GetComponentInChildren<ParticleSystem>().Play();
+      Toolbox.Instance.SfxMan.PlaySoundWithPitch("RuleBreak", 0.9f, 1.1f, 0.25f);
 
       ruleCam.gameObject.SetActive(false);
 

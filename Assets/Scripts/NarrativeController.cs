@@ -45,7 +45,7 @@ public class NarrativeController : MonoBehaviour
     // DEBUG CONTROLS
     if (Input.GetKeyDown(KeyCode.C))
     {
-      textDisplay.FinishTextDisplay();
+      //textDisplay.FinishTextDisplay();
     }
     //
     
